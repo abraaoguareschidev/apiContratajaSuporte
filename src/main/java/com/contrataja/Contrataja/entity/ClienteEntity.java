@@ -10,6 +10,6 @@ public class ClienteEntity extends UsuarioEntity {
 
 	public ClienteEntity()
 	{
-
+		
     }
 }

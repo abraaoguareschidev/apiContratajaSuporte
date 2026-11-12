@@ -3,11 +3,15 @@ package com.contrataja.Contrataja.controller;
 import com.contrataja.Contrataja.dto.MensagemSuporteResponseDTO;
 import com.contrataja.Contrataja.service.MensagensSuporteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,6 +38,13 @@ public class MensagemSuporteWebSocketController {
                 "/topic/chamado/" + idChamado,
                 resposta
         );
+    }
+    @PutMapping("/chamado/{idChamado}/lidas")
+    public ResponseEntity<Void> marcarComoLidas(@PathVariable Integer idChamado,@RequestParam Integer idUsuario) {
+
+        mensagensService.marcarMensagensComoLidas(idChamado, idUsuario);
+
+        return ResponseEntity.noContent().build();
     }
     // formato da mensagem que o front envia, com o id de quem está enviando e o texto, usei record porque são só dados que não mudam e o java gera o construtor e os métodos de leitura sozinho
     public record MensagemEnvio(Integer idRemetente, String conteudo) {}

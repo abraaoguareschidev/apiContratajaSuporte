@@ -7,6 +7,7 @@ import com.contrataja.Contrataja.repository.MensagensSuporteRepository;
 import com.contrataja.Contrataja.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,6 +50,10 @@ public class MensagensSuporteService {
         MensagensSuporteEntity salva = mensagensRepository.save(mensagem);
         // Converte a mensagem salva em dto e devolve esse dto é o que o controller manda para o  tópico para os usuários do chat
         return converterParaDTO(salva);
+    }
+    @Transactional
+    public void marcarMensagensComoLidas(Integer idChamado, Integer idUsuario) {
+        mensagensRepository.marcarComoLidas(idChamado, idUsuario);
     }
     // método  que transforma a entidade do banco em dto pegando só os dados que o chat precisa
     private MensagemSuporteResponseDTO converterParaDTO(MensagensSuporteEntity mensagem) {

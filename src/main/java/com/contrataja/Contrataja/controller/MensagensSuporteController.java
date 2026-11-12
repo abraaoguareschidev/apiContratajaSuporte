@@ -25,4 +25,10 @@ public class MensagensSuporteController {
         return mensagensSuporteService.enviarMensagem(idChamado, idRemetente, conteudo);
     }
 
+    @PutMapping("/chamado/{idChamado}/lidas")
+    public void marcarComoLidas(@PathVariable Integer idChamado,@RequestParam Integer idUsuario) {
+
+        mensagensSuporteService.marcarMensagensComoLidas(idChamado,idUsuario);
+    }
+
 }
