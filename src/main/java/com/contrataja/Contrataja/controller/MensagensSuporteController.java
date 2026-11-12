@@ -4,6 +4,7 @@ import com.contrataja.Contrataja.dto.MensagemSuporteResponseDTO;
 import com.contrataja.Contrataja.entity.MensagensSuporteEntity;
 import com.contrataja.Contrataja.service.MensagensSuporteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class MensagensSuporteController {
 
     private final MensagensSuporteService mensagensSuporteService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/chamado/{idChamado}")
     public List<MensagemSuporteResponseDTO> listarPorChamado(@PathVariable Integer idChamado) {
@@ -26,9 +28,19 @@ public class MensagensSuporteController {
     }
 
     @PutMapping("/chamado/{idChamado}/lidas")
-    public void marcarComoLidas(@PathVariable Integer idChamado,@RequestParam Integer idUsuario) {
+    public void marcarComoLidas(
+            @PathVariable Integer idChamado,
+            @RequestParam Integer idUsuario) {
 
-        mensagensSuporteService.marcarMensagensComoLidas(idChamado,idUsuario);
+        mensagensSuporteService.marcarMensagensComoLidas(
+                idChamado,
+                idUsuario
+        );
+
+        messagingTemplate.convertAndSend(
+                "/topic/chamado/" + idChamado + "/leitura",
+                (Object) java.util.Map.of("idUsuario", idUsuario)
+        );
     }
 
 }
