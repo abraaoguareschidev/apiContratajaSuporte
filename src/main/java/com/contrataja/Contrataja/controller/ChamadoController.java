@@ -26,4 +26,11 @@ public class ChamadoController {
     public ChamadoEntity cadastrarChamado(@RequestBody AbrirChamadoDTO dto) {
         return chamadoService.cadastrarChamado(dto);
     }
+
+    @PutMapping("/{idChamado}/encerrar")
+    public ChamadoEntity encerrarChamado(
+            @PathVariable Integer idChamado) {
+
+        return chamadoService.encerrarChamado(idChamado);
+    }
 }

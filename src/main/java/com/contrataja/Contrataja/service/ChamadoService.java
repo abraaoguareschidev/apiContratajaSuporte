@@ -7,6 +7,7 @@ import com.contrataja.Contrataja.repository.ChamadoRepository;
 import com.contrataja.Contrataja.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,6 +27,24 @@ public class ChamadoService {
 
     public ChamadoEntity buscarChamadoPorId(Integer id){
         return chamadoRepository.findById(id).orElse(null);
+    }
+
+    public ChamadoEntity encerrarChamado(Integer idChamado) {
+
+        ChamadoEntity chamado = buscarChamadoPorId(idChamado);
+
+        if (chamado == null) {
+            throw new RuntimeException("Chamado não encontrado.");
+        }
+
+        if ("fechado".equalsIgnoreCase(chamado.getStatus())) {
+            throw new RuntimeException("Este chamado já está fechado.");
+        }
+
+        chamado.setStatus("fechado");
+        chamado.setDataFechamento(LocalDateTime.now());
+
+        return chamadoRepository.save(chamado);
     }
 
     public ChamadoEntity cadastrarChamado(AbrirChamadoDTO dto) {

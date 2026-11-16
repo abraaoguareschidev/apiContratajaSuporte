@@ -30,6 +30,9 @@ public class MensagensSuporteService {
             Integer idChamado, Integer idRemetente, String conteudo) {
         //busca o chamado no banco pelo id Se não existir lança uma exceção e interrompe o envio
         var chamado = chamadoRepository.findById(idChamado).orElseThrow();
+        if ("fechado".equalsIgnoreCase(chamado.getStatus())) {
+            throw new RuntimeException("Não é possível enviar mensagens em um chamado fechado.");
+        }
         // busca no banco o usuário que está enviando a mensagem  Se não existir lança uma exceção e interrompe o envio
         var remetente = usuarioRepository.findById(idRemetente).orElseThrow();
         //verifica se o remetente é o cliente que abriu o chamado comparando o id do usuario que  abriu chamado com o id do remetente
