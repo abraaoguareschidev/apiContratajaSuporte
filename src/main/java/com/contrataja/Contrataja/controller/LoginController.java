@@ -4,10 +4,7 @@ import com.contrataja.Contrataja.dto.LoginDTO;
 import com.contrataja.Contrataja.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,6 +17,14 @@ public class LoginController {
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO){
         usuarioService.logar(loginDTO);
         return ResponseEntity.ok("Login realizado com sucesso");
+    }
+
+    @GetMapping("/verificar-email")
+    public ResponseEntity<String> verificarEmail(@RequestParam String token) {
+
+        usuarioService.verificarEmail(token);
+
+        return ResponseEntity.ok("E-mail verificado com sucesso!");
     }
 
 }
