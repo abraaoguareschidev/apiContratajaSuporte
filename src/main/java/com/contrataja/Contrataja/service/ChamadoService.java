@@ -2,6 +2,7 @@ package com.contrataja.Contrataja.service;
 
 import com.contrataja.Contrataja.dto.AbrirChamadoDTO;
 import com.contrataja.Contrataja.entity.ChamadoEntity;
+import com.contrataja.Contrataja.entity.SuporteEntity;
 import com.contrataja.Contrataja.entity.UsuarioEntity;
 import com.contrataja.Contrataja.repository.ChamadoRepository;
 import com.contrataja.Contrataja.repository.UsuarioRepository;
@@ -55,6 +56,29 @@ public class ChamadoService {
         chamado.setAssunto(dto.getAssunto());
         chamado.setDescricao(dto.getDescricao());
         chamado.setStatus("aberto");
+        return chamadoRepository.save(chamado);
+    }
+
+    public ChamadoEntity assumirChamado(Integer idChamado, Integer idSuporte) {
+        ChamadoEntity chamado = buscarChamadoPorId(idChamado);
+
+        if (chamado == null) {
+            throw new RuntimeException("Chamado não encontrado.");
+        }
+        if (!"aberto".equalsIgnoreCase(chamado.getStatus())) {
+            throw new RuntimeException("Este chamado não está disponível para atendimento.");
+        }
+        UsuarioEntity usuario = usuarioRepository.findById(idSuporte)
+                .orElseThrow(() -> new RuntimeException("Suporte não encontrado."));
+
+        if (!(usuario instanceof SuporteEntity)) {
+            throw new RuntimeException("O usuário informado não é um suporte.");
+        }
+
+        chamado.setSuporte((SuporteEntity) usuario);
+
+        chamado.setStatus("em_atendimento");
+
         return chamadoRepository.save(chamado);
     }
 

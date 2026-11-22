@@ -97,7 +97,7 @@ public class UsuarioService {
 
     }
 
-    public void logar(LoginDTO dto) {
+    public Integer logar(LoginDTO dto) {
         //procurar usuario pelo email do dto
         Optional<UsuarioEntity> usuario = usuarioRepository.findByEmail(dto.getLogin());
         if (usuario.isEmpty()) {
@@ -115,7 +115,7 @@ public class UsuarioService {
         if (!"ATIVO".equals(usuario.get().getStatus())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Confirme seu e-mail antes de fazer login.");
         }
-
+        return usuario.get().getIdUsuario();
     }
 
 }

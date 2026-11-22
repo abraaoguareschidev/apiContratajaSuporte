@@ -33,4 +33,10 @@ public class ChamadoController {
 
         return chamadoService.encerrarChamado(idChamado);
     }
+
+    @PutMapping("/{idChamado}/assumir")
+    public ChamadoEntity assumirChamado(@PathVariable Integer idChamado,@RequestParam Integer idSuporte) {
+
+        return chamadoService.assumirChamado(idChamado, idSuporte);
+    }
 }

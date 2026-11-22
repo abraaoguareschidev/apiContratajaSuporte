@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -15,8 +17,8 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO){
-        usuarioService.logar(loginDTO);
-        return ResponseEntity.ok("Login realizado com sucesso");
+        Integer idSuporte = usuarioService.logar(loginDTO);
+        return ResponseEntity.ok(Map.of("idUsuario", idSuporte));
     }
 
     @GetMapping("/verificar-email")
