@@ -32,6 +32,9 @@ public class ChamadoEntity {
     @Column(columnDefinition = "text")
     private String descricao;
 
+    @Column(name = "solucao", columnDefinition = "TEXT")
+    private String solucao;
+
     @Column(name = "data_abertura", insertable = false, updatable = false)
     private LocalDateTime dataAbertura;
 

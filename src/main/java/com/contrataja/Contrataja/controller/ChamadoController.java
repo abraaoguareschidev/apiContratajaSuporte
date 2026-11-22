@@ -6,6 +6,7 @@ import com.contrataja.Contrataja.service.ChamadoService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/chamados")
@@ -29,9 +30,12 @@ public class ChamadoController {
 
     @PutMapping("/{idChamado}/encerrar")
     public ChamadoEntity encerrarChamado(
-            @PathVariable Integer idChamado) {
+            @PathVariable Integer idChamado,
+            @RequestBody Map<String, String> dados) {
 
-        return chamadoService.encerrarChamado(idChamado);
+        String solucao = dados.get("solucao");
+
+        return chamadoService.encerrarChamado(idChamado, solucao);
     }
 
     @PutMapping("/{idChamado}/assumir")

@@ -30,7 +30,7 @@ public class ChamadoService {
         return chamadoRepository.findById(id).orElse(null);
     }
 
-    public ChamadoEntity encerrarChamado(Integer idChamado) {
+    public ChamadoEntity encerrarChamado(Integer idChamado, String solucao) {
 
         ChamadoEntity chamado = buscarChamadoPorId(idChamado);
 
@@ -42,6 +42,11 @@ public class ChamadoService {
             throw new RuntimeException("Este chamado já está fechado.");
         }
 
+        if (solucao == null || solucao.isBlank()) {
+            throw new RuntimeException("Informe a solução do chamado.");
+        }
+
+        chamado.setSolucao(solucao.trim());
         chamado.setStatus("fechado");
         chamado.setDataFechamento(LocalDateTime.now());
 
