@@ -1,5 +1,7 @@
 package com.contrataja.Contrataja.service;
 
+import com.contrataja.Contrataja.dto.AlterarSenhaDTO;
+import com.contrataja.Contrataja.dto.AtualizarPerfilSuporteDTO;
 import com.contrataja.Contrataja.dto.CadastrarSuporteDTO;
 import com.contrataja.Contrataja.dto.LoginDTO;
 import com.contrataja.Contrataja.entity.SuporteEntity;
@@ -117,5 +119,114 @@ public class UsuarioService {
         }
         return usuario.get().getIdUsuario();
     }
+
+    public SuporteEntity buscarSuportePorId(int idUsuario) {
+
+        UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Usuário não encontrado."
+                ));
+
+        if (!(usuario instanceof SuporteEntity suporte)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Suporte não encontrado."
+            );
+        }
+
+        return suporte;
+    }
+
+
+    public void atualizarPerfilSuporte(
+            int idUsuario,
+            AtualizarPerfilSuporteDTO dto) {
+
+        SuporteEntity suporte = buscarSuportePorId(idUsuario);
+
+        if (dto.nome() == null || dto.nome().isBlank()
+                || dto.email() == null || dto.email().isBlank()
+                || dto.telefone() == null || dto.telefone().isBlank()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Nome, e-mail e telefone são obrigatórios."
+            );
+        }
+
+        String novoEmail = dto.email().trim();
+
+        if (!suporte.getEmail().equalsIgnoreCase(novoEmail)
+                && usuarioRepository.existsByEmail(novoEmail)) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Este e-mail já está cadastrado."
+            );
+        }
+
+        suporte.setNome(dto.nome().trim());
+        suporte.setEmail(novoEmail);
+        suporte.setTelefone(dto.telefone().trim());
+        suporte.setDataNasc(dto.dataNasc());
+
+        suporte.setCep(dto.cep());
+        suporte.setEstado(dto.estado());
+        suporte.setCidade(dto.cidade());
+        suporte.setBairro(dto.bairro());
+        suporte.setRua(dto.rua());
+        suporte.setNumeroCasa(dto.numeroCasa());
+        suporte.setComplemento(dto.complemento());
+
+        usuarioRepository.save(suporte);
+    }
+
+
+    public void alterarSenha(int idUsuario, AlterarSenhaDTO dto) {
+
+        // Verifica se os campos foram preenchidos
+        if (dto == null
+                || dto.senhaAtual() == null
+                || dto.senhaAtual().isBlank()
+                || dto.novaSenha() == null
+                || dto.novaSenha().isBlank()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Preencha a senha atual e a nova senha."
+            );
+        }
+
+        // Busca o suporte no banco
+        SuporteEntity suporte = buscarSuportePorId(idUsuario);
+
+        // Confere se a senha atual está correta
+        if (!passwordEncoder.matches(
+                dto.senhaAtual(), suporte.getSenha())) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Senha atual incorreta."
+            );
+        }
+
+        // Valida a nova senha
+        if (dto.novaSenha().length() < 8) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A nova senha deve ter pelo menos 8 caracteres."
+            );
+        }
+
+        // Criptografa e salva a nova senha
+        suporte.setSenha(
+                passwordEncoder.encode(dto.novaSenha())
+        );
+
+        usuarioRepository.save(suporte);
+    }
+
+
 
 }
