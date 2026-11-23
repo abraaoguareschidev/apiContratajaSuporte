@@ -6,21 +6,20 @@ import com.contrataja.Contrataja.entity.SuporteEntity;
 import com.contrataja.Contrataja.entity.UsuarioEntity;
 import com.contrataja.Contrataja.repository.ChamadoRepository;
 import com.contrataja.Contrataja.repository.UsuarioRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ChamadoService {
     private final ChamadoRepository chamadoRepository;
-
     private final UsuarioRepository usuarioRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public ChamadoService(ChamadoRepository chamadoRepository, UsuarioRepository usuarioRepository) {
-        this.chamadoRepository = chamadoRepository;
-        this.usuarioRepository = usuarioRepository;
-    }
 
     public List<ChamadoEntity> listarChamados(){
         return chamadoRepository.findAll();
@@ -50,7 +49,14 @@ public class ChamadoService {
         chamado.setStatus("fechado");
         chamado.setDataFechamento(LocalDateTime.now());
 
-        return chamadoRepository.save(chamado);
+        ChamadoEntity chamadoSalvo = chamadoRepository.save(chamado);
+
+        messagingTemplate.convertAndSend(
+                "/topic/chamados",
+                "CHAMADO_ENCERRADO"
+        );
+
+        return chamadoSalvo;
     }
 
     public ChamadoEntity cadastrarChamado(AbrirChamadoDTO dto) {
@@ -61,7 +67,13 @@ public class ChamadoService {
         chamado.setAssunto(dto.getAssunto());
         chamado.setDescricao(dto.getDescricao());
         chamado.setStatus("aberto");
-        return chamadoRepository.save(chamado);
+
+        ChamadoEntity chamadoSalvo = chamadoRepository.save(chamado);
+
+        messagingTemplate.convertAndSend("/topic/chamados","NOVO_CHAMADO");
+
+        return chamadoSalvo;
+
     }
 
     public ChamadoEntity assumirChamado(Integer idChamado, Integer idSuporte) {
@@ -84,7 +96,14 @@ public class ChamadoService {
 
         chamado.setStatus("em_atendimento");
 
-        return chamadoRepository.save(chamado);
+        ChamadoEntity chamadoSalvo = chamadoRepository.save(chamado);
+
+        messagingTemplate.convertAndSend(
+                "/topic/chamados",
+                "CHAMADO_ASSUMIDO"
+        );
+
+        return chamadoSalvo;
     }
 
 }
