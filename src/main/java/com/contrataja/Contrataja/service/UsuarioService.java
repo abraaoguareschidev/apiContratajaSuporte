@@ -64,7 +64,7 @@ public class UsuarioService {
         verificacao.setExpiracao(LocalDateTime.now().plusMinutes(10));
 
         verificacaoEmailRepository.save(verificacao);
-        String link = "http://localhost:8080/auth/verificar-email?token=" + token;
+        String link = "https://surpass-handled-recollect.ngrok-free.dev/auth/verificar-email?token=" + token;
 
         emailService.sendEmail(suporteSalvo.getEmail(),"Confirme seu e-mail - ContrataJá","Olá, " + suporteSalvo.getNome() +"!\n\nClique no link para confirmar seu e-mail:\n" + link);
         return suporteSalvo;

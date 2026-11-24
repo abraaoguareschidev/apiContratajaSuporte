@@ -19,7 +19,17 @@ public interface MensagensSuporteRepository extends JpaRepository<MensagensSupor
     WHERE m.chamado.idChamado = :idChamado
     AND m.remetente.idUsuario <> :idUsuario
     AND m.statusLeitura = false """)
-    void marcarComoLidas(
+    void marcarComoLidas(@Param("idChamado") Integer idChamado,@Param("idUsuario") Integer idUsuario);
+
+    @Query("""
+    SELECT COUNT(m)
+    FROM MensagensSuporteEntity m
+    WHERE m.chamado.idChamado = :idChamado
+    AND m.remetente.idUsuario <> :idSuporte
+    AND m.statusLeitura = false
+    """)
+    long contarMensagensNaoLidas(
             @Param("idChamado") Integer idChamado,
-            @Param("idUsuario") Integer idUsuario);
+            @Param("idSuporte") Integer idSuporte
+    );
 }

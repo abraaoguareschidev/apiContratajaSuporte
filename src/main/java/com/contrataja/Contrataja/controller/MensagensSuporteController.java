@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/mensagens-suporte")
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class MensagensSuporteController {
 
@@ -22,9 +23,14 @@ public class MensagensSuporteController {
         return mensagensSuporteService.listarPorChamado(idChamado);
     }
     @PostMapping("/enviar")
-    public MensagemSuporteResponseDTO enviarMensagem(@RequestParam Integer idChamado, @RequestParam Integer idRemetente, @RequestParam String conteudo) {
+    public MensagemSuporteResponseDTO enviarMensagem(@RequestParam Integer idChamado,@RequestParam Integer idRemetente,@RequestParam String conteudo) {
 
-        return mensagensSuporteService.enviarMensagem(idChamado, idRemetente, conteudo);
+        MensagemSuporteResponseDTO resposta =
+                mensagensSuporteService.enviarMensagem(idChamado, idRemetente, conteudo);
+
+        messagingTemplate.convertAndSend("/topic/chamado/" + idChamado,resposta);
+
+        return resposta;
     }
 
     @PutMapping("/chamado/{idChamado}/lidas")
@@ -41,6 +47,14 @@ public class MensagensSuporteController {
                 "/topic/chamado/" + idChamado + "/leitura",
                 (Object) java.util.Map.of("idUsuario", idUsuario)
         );
+    }
+
+    @GetMapping("/chamado/{idChamado}/nao-lidas")
+    public long contarMensagensNaoLidas(
+            @PathVariable Integer idChamado,
+            @RequestParam Integer idSuporte) {
+
+        return mensagensSuporteService.contarMensagensNaoLidas(idChamado, idSuporte);
     }
 
 }

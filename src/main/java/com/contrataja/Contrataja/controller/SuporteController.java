@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/usuarios")
 @AllArgsConstructor
+@CrossOrigin("*")
 public class SuporteController {
 
     private final UsuarioService usuarioService;

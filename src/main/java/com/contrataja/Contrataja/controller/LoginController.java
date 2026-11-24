@@ -11,6 +11,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class LoginController {
 
     private final UsuarioService usuarioService;

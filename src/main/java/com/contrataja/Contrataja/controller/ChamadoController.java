@@ -10,6 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/chamados")
+@CrossOrigin("*")
 public class ChamadoController {
 
     private final ChamadoService chamadoService;

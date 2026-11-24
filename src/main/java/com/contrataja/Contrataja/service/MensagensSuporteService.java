@@ -6,6 +6,7 @@ import com.contrataja.Contrataja.repository.ChamadoRepository;
 import com.contrataja.Contrataja.repository.MensagensSuporteRepository;
 import com.contrataja.Contrataja.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public class MensagensSuporteService {
     private final MensagensSuporteRepository mensagensRepository;
     private final UsuarioRepository usuarioRepository;
     private final ChamadoRepository chamadoRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     //busca no banco todas as chamadas de um chamado em ordem de envio e converte cada uma para dto antes de devolver
     public List<MensagemSuporteResponseDTO> listarPorChamado(Integer idChamado) {
@@ -51,6 +53,7 @@ public class MensagensSuporteService {
         mensagem.setConteudo(conteudo);
         // Grava a mensagem no banco de dados o save devolve a mensagem já salva
         MensagensSuporteEntity salva = mensagensRepository.save(mensagem);
+
         // Converte a mensagem salva em dto e devolve esse dto é o que o controller manda para o  tópico para os usuários do chat
         return converterParaDTO(salva);
     }
@@ -69,4 +72,11 @@ public class MensagensSuporteService {
                 mensagem.getStatusLeitura()
         );
     }
+    public long contarMensagensNaoLidas(Integer idChamado, Integer idSuporte) {
+
+        return mensagensRepository.contarMensagensNaoLidas(
+                idChamado, idSuporte
+        );
+    }
+
 }
