@@ -24,6 +24,9 @@ public class ChamadoService {
     public List<ChamadoEntity> listarChamados(){
         return chamadoRepository.findAll();
     }
+    public List<ChamadoEntity> listarMeusChamados(Integer idSuporte) {
+        return chamadoRepository.findBySuporte_IdUsuario(idSuporte);
+    }
 
     public ChamadoEntity buscarChamadoPorId(Integer id){
         return chamadoRepository.findById(id).orElse(null);

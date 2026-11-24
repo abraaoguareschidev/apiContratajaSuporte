@@ -43,4 +43,11 @@ public class ChamadoController {
 
         return chamadoService.assumirChamado(idChamado, idSuporte);
     }
+
+    @GetMapping("/suporte/{idSuporte}")
+    public List<ChamadoEntity> listarMeusChamados(
+            @PathVariable Integer idSuporte) {
+
+        return chamadoService.listarMeusChamados(idSuporte);
+    }
 }
