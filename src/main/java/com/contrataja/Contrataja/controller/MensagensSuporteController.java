@@ -43,10 +43,8 @@ public class MensagensSuporteController {
                 idUsuario
         );
 
-        messagingTemplate.convertAndSend(
-                "/topic/chamado/" + idChamado + "/leitura",
-                (Object) java.util.Map.of("idUsuario", idUsuario)
-        );
+        messagingTemplate.convertAndSend("/topic/chamado/" + idChamado + "/leitura",(Object) java.util.Map.of("idUsuario", idUsuario));
+        messagingTemplate.convertAndSend("/topic/chamados","MENSAGENS_LIDAS");
     }
 
     @GetMapping("/chamado/{idChamado}/nao-lidas")

@@ -53,6 +53,7 @@ public class MensagensSuporteService {
         mensagem.setConteudo(conteudo);
         // Grava a mensagem no banco de dados o save devolve a mensagem já salva
         MensagensSuporteEntity salva = mensagensRepository.save(mensagem);
+        messagingTemplate.convertAndSend("/topic/chamados","NOVA_MENSAGEM");
 
         // Converte a mensagem salva em dto e devolve esse dto é o que o controller manda para o  tópico para os usuários do chat
         return converterParaDTO(salva);
