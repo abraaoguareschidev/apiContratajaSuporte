@@ -22,6 +22,16 @@ public class LoginController {
         return ResponseEntity.ok(Map.of("idUsuario", idSuporte));
     }
 
+    @PostMapping("/reenviar-verificacao")
+    public ResponseEntity<String> reenviarVerificacao(@RequestParam String email) {
+
+        usuarioService.reenviarEmailVerificacao(email);
+
+        return ResponseEntity.ok(
+                "Se a conta estiver pendente e o reenvio estiver disponível, um novo e-mail será enviado."
+        );
+    }
+
     @GetMapping("/verificar-email")
     public ResponseEntity<String> verificarEmail(@RequestParam String token) {
 

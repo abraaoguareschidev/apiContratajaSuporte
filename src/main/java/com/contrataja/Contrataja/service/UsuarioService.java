@@ -9,6 +9,7 @@ import com.contrataja.Contrataja.entity.UsuarioEntity;
 import com.contrataja.Contrataja.entity.VerificacaoEmailEntity;
 import com.contrataja.Contrataja.repository.UsuarioRepository;
 import com.contrataja.Contrataja.repository.VerificacaoEmailRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,10 +67,56 @@ public class UsuarioService {
         verificacaoEmailRepository.save(verificacao);
         String link = "https://surpass-handled-recollect.ngrok-free.dev/auth/verificar-email?token=" + token;
 
-        emailService.sendEmail(suporteSalvo.getEmail(),"Confirme seu e-mail - ContrataJá","Olá, " + suporteSalvo.getNome() +"!\n\nClique no link para confirmar seu e-mail:\n" + link);
+        emailService.sendEmail(suporteSalvo.getEmail(), "Confirme seu e-mail - ContrataJá", "Olá, " + suporteSalvo.getNome() + "!\n\nClique no link para confirmar seu e-mail:\n" + link);
         return suporteSalvo;
         // Enviar um email pra verificar a conta
 
+    }
+
+    @Transactional
+    public void reenviarEmailVerificacao(String email) {
+
+        Optional<UsuarioEntity> usuario =
+                usuarioRepository.findByEmail(email);
+
+        if (usuario.isEmpty()) {
+            return;
+        }
+
+        UsuarioEntity suporte = usuario.get();
+
+        if (!"SUPORTE".equals(suporte.getTipoUsuario())
+                || !"PENDENTE".equals(suporte.getStatus())) {
+            return;
+        }
+
+        if (verificacaoEmailRepository
+                .existsByUsuario_IdUsuarioAndExpiracaoAfter(
+                        suporte.getIdUsuario(),
+                        LocalDateTime.now().plusMinutes(9))) {
+            return;
+        }
+
+        verificacaoEmailRepository.deleteByUsuario_IdUsuario(suporte.getIdUsuario());
+
+        String token = UUID.randomUUID().toString();
+
+        VerificacaoEmailEntity verificacao = new VerificacaoEmailEntity();
+
+        verificacao.setUsuario(suporte);
+        verificacao.setToken(token);
+        verificacao.setExpiracao(LocalDateTime.now().plusMinutes(10));
+
+        verificacaoEmailRepository.save(verificacao);
+
+        String link = "https://surpass-handled-recollect.ngrok-free.dev/auth/verificar-email?token=" + token;
+
+        emailService.sendEmail(
+                suporte.getEmail(),
+                "Confirme seu e-mail - ContrataJá",
+                "Olá, " + suporte.getNome()
+                        + "!\n\nClique no link para confirmar seu e-mail:\n" + link
+        );
     }
 
     public void verificarEmail(String token) {
@@ -115,7 +162,7 @@ public class UsuarioService {
         }
 
         if (!"ATIVO".equals(usuario.get().getStatus())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Confirme seu e-mail antes de fazer login.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Confirme seu e-mail antes de fazer login.");
         }
         return usuario.get().getIdUsuario();
     }
@@ -226,7 +273,6 @@ public class UsuarioService {
 
         usuarioRepository.save(suporte);
     }
-
 
 
 }

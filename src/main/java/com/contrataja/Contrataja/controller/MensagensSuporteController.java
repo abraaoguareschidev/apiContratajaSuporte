@@ -25,8 +25,7 @@ public class MensagensSuporteController {
     @PostMapping("/enviar")
     public MensagemSuporteResponseDTO enviarMensagem(@RequestParam Integer idChamado,@RequestParam Integer idRemetente,@RequestParam String conteudo) {
 
-        MensagemSuporteResponseDTO resposta =
-                mensagensSuporteService.enviarMensagem(idChamado, idRemetente, conteudo);
+        MensagemSuporteResponseDTO resposta = mensagensSuporteService.enviarMensagem(idChamado, idRemetente, conteudo);
 
         messagingTemplate.convertAndSend("/topic/chamado/" + idChamado,resposta);
 
@@ -34,23 +33,16 @@ public class MensagensSuporteController {
     }
 
     @PutMapping("/chamado/{idChamado}/lidas")
-    public void marcarComoLidas(
-            @PathVariable Integer idChamado,
-            @RequestParam Integer idUsuario) {
+    public void marcarComoLidas(@PathVariable Integer idChamado,@RequestParam Integer idUsuario) {
 
-        mensagensSuporteService.marcarMensagensComoLidas(
-                idChamado,
-                idUsuario
-        );
+        mensagensSuporteService.marcarMensagensComoLidas(idChamado,idUsuario);
 
         messagingTemplate.convertAndSend("/topic/chamado/" + idChamado + "/leitura",(Object) java.util.Map.of("idUsuario", idUsuario));
         messagingTemplate.convertAndSend("/topic/chamados","MENSAGENS_LIDAS");
     }
 
     @GetMapping("/chamado/{idChamado}/nao-lidas")
-    public long contarMensagensNaoLidas(
-            @PathVariable Integer idChamado,
-            @RequestParam Integer idSuporte) {
+    public long contarMensagensNaoLidas(@PathVariable Integer idChamado,@RequestParam Integer idSuporte) {
 
         return mensagensSuporteService.contarMensagensNaoLidas(idChamado, idSuporte);
     }
