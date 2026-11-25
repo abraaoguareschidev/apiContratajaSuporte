@@ -45,6 +45,13 @@ public class ChamadoController {
         return chamadoService.assumirChamado(idChamado, idSuporte);
     }
 
+    @GetMapping("/{idChamado}/usuario")
+    public Map<String, Object> buscarUsuarioDoChamado(
+            @PathVariable Integer idChamado) {
+
+        return chamadoService.buscarUsuarioDoChamado(idChamado);
+    }
+
     @GetMapping("/suporte/{idSuporte}")
     public List<ChamadoEntity> listarMeusChamados(
             @PathVariable Integer idSuporte) {
