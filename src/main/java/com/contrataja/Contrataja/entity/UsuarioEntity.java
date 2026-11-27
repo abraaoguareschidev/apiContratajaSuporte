@@ -32,7 +32,7 @@ public class UsuarioEntity {
 
     @Column(nullable = false,length = 15)
     private String telefone;
-
+    
     @Column(name  = "foto_perfil" , length = 255)
     private String fotoPerfil;
 
