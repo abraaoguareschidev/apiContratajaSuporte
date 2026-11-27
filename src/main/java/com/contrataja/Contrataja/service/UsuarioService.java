@@ -216,7 +216,7 @@ public class UsuarioService {
         suporte.setNome(dto.nome().trim());
         suporte.setEmail(novoEmail);
         suporte.setTelefone(dto.telefone().trim());
-        suporte.setDataNasc(dto.dataNasc());
+
 
         suporte.setCep(dto.cep());
         suporte.setEstado(dto.estado());
