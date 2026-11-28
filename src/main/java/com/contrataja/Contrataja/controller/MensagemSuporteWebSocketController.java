@@ -33,13 +33,9 @@ public class MensagemSuporteWebSocketController {
             , @Payload MensagemEnvio mensagem) {
         // chama o service para validar o remetente e salvar a mensagem no banco, o retorno já vem convertido em dto
         MensagemSuporteResponseDTO resposta =
-                mensagensService.enviarMensagem(idChamado, mensagem.idRemetente(), mensagem.conteudo()
-                );
+                mensagensService.enviarMensagem(idChamado, mensagem.idRemetente(), mensagem.conteudo());
         // publica a mensagem salva no tópico do chamado, todos os usuários inscritos em /topic/chamado/ e o id recebem na hora, é isso que faz o chat funcionar em tempo real
-        messagingTemplate.convertAndSend(
-                "/topic/chamado/" + idChamado,
-                resposta
-        );
+        messagingTemplate.convertAndSend("/topic/chamado/" + idChamado,resposta);
     }
     @PutMapping("/chamado/{idChamado}/lidas")
     public ResponseEntity<Void> marcarComoLidas(@PathVariable Integer idChamado,@RequestParam Integer idUsuario) {

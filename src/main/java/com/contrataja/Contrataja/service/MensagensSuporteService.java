@@ -28,8 +28,7 @@ public class MensagensSuporteService {
     }
 
     //Recebe o chamado, o remetente e o texto, valida se o remetente pode falar naquele chamado, salva a mensagem no banco e devolve ela já convertida em dto
-    public MensagemSuporteResponseDTO enviarMensagem(
-            Integer idChamado, Integer idRemetente, String conteudo) {
+    public MensagemSuporteResponseDTO enviarMensagem(Integer idChamado, Integer idRemetente, String conteudo) {
         //busca o chamado no banco pelo id Se não existir lança uma exceção e interrompe o envio
         var chamado = chamadoRepository.findById(idChamado).orElseThrow();
         if ("fechado".equalsIgnoreCase(chamado.getStatus())) {
@@ -64,20 +63,11 @@ public class MensagensSuporteService {
     }
     // método  que transforma a entidade do banco em dto pegando só os dados que o chat precisa
     private MensagemSuporteResponseDTO converterParaDTO(MensagensSuporteEntity mensagem) {
-        return new MensagemSuporteResponseDTO(
-                mensagem.getIdMensagem(),
-                mensagem.getRemetente().getIdUsuario(),
-                mensagem.getRemetente().getNome(),
-                mensagem.getConteudo(),
-                mensagem.getDataEnvio(),
-                mensagem.getStatusLeitura()
-        );
+        return new MensagemSuporteResponseDTO(mensagem.getIdMensagem(),mensagem.getRemetente().getIdUsuario(),mensagem.getRemetente().getNome(),mensagem.getConteudo(),mensagem.getDataEnvio(),mensagem.getStatusLeitura());
     }
     public long contarMensagensNaoLidas(Integer idChamado, Integer idSuporte) {
 
-        return mensagensRepository.contarMensagensNaoLidas(
-                idChamado, idSuporte
-        );
+        return mensagensRepository.contarMensagensNaoLidas(idChamado, idSuporte);
     }
 
 }

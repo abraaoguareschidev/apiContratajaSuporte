@@ -27,9 +27,7 @@ public class LoginController {
 
         usuarioService.reenviarEmailVerificacao(email);
 
-        return ResponseEntity.ok(
-                "Se a conta estiver pendente e o reenvio estiver disponível, um novo e-mail será enviado."
-        );
+        return ResponseEntity.ok("Se a conta estiver pendente e o reenvio estiver disponível, um novo e-mail será enviado.");
     }
 
     @GetMapping("/verificar-email")

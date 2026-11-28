@@ -13,14 +13,12 @@ public class ContratacaoService {
 
     private final ContratacaoRepository contratacaoRepository;
 
-    public List<Map<String, Object>> listarContratacoesCliente(
-            Integer idCliente) {
+    public List<Map<String, Object>> listarContratacoesCliente(Integer idCliente) {
 
         return contratacaoRepository.listarContratacoesCliente(idCliente);
     }
 
-    public List<Map<String, Object>> listarContratacoesProfissional(
-            Integer idProfissional) {
+    public List<Map<String, Object>> listarContratacoesProfissional(Integer idProfissional) {
 
         return contratacaoRepository.listarContratacoesProfissional(idProfissional);
     }

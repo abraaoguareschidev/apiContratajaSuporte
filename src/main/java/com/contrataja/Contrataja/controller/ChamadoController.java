@@ -30,9 +30,7 @@ public class ChamadoController {
     }
 
     @PutMapping("/{idChamado}/encerrar")
-    public ChamadoEntity encerrarChamado(
-            @PathVariable Integer idChamado,
-            @RequestBody Map<String, String> dados) {
+    public ChamadoEntity encerrarChamado(@PathVariable Integer idChamado,@RequestBody Map<String, String> dados) {
 
         String solucao = dados.get("solucao");
 
@@ -46,15 +44,13 @@ public class ChamadoController {
     }
 
     @GetMapping("/{idChamado}/usuario")
-    public Map<String, Object> buscarUsuarioDoChamado(
-            @PathVariable Integer idChamado) {
+    public Map<String, Object> buscarUsuarioDoChamado(@PathVariable Integer idChamado) {
 
         return chamadoService.buscarUsuarioDoChamado(idChamado);
     }
 
     @GetMapping("/suporte/{idSuporte}")
-    public List<ChamadoEntity> listarMeusChamados(
-            @PathVariable Integer idSuporte) {
+    public List<ChamadoEntity> listarMeusChamados(@PathVariable Integer idSuporte) {
 
         return chamadoService.listarMeusChamados(idSuporte);
     }

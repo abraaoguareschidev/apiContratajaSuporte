@@ -40,8 +40,7 @@ public class SuporteController {
 
 
     @GetMapping("/suporte/{idUsuario}")
-    public ResponseEntity<SuportePerfilDTO> buscarPerfil(
-            @PathVariable Integer idUsuario) {
+    public ResponseEntity<SuportePerfilDTO> buscarPerfil(@PathVariable Integer idUsuario) {
 
         SuporteEntity suporte = usuarioService.buscarSuportePorId(idUsuario);
 
@@ -59,17 +58,14 @@ public class SuporteController {
                 suporte.getRua(),
                 suporte.getNumeroCasa(),
                 suporte.getComplemento(),
-                suporte.getFotoPerfil()
-        );
+                suporte.getFotoPerfil());
 
         return ResponseEntity.ok(perfil);
     }
 
 
     @PutMapping("/suporte/{idUsuario}")
-    public ResponseEntity<Void> atualizarPerfil(
-            @PathVariable Integer idUsuario,
-            @RequestBody AtualizarPerfilSuporteDTO dto) {
+    public ResponseEntity<Void> atualizarPerfil(@PathVariable Integer idUsuario,@RequestBody AtualizarPerfilSuporteDTO dto) {
 
         usuarioService.atualizarPerfilSuporte(idUsuario, dto);
 
@@ -78,9 +74,7 @@ public class SuporteController {
 
 
     @PutMapping("/suporte/{idUsuario}/senha")
-    public ResponseEntity<Void> alterarSenha(
-            @PathVariable Integer idUsuario,
-            @RequestBody AlterarSenhaDTO dto) {
+    public ResponseEntity<Void> alterarSenha(@PathVariable Integer idUsuario,@RequestBody AlterarSenhaDTO dto) {
 
         usuarioService.alterarSenha(idUsuario, dto);
 

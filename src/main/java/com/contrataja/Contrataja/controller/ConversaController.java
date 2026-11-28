@@ -18,12 +18,8 @@ public class ConversaController {
     private final ConversaService conversaService;
 
     @GetMapping("/mensagens")
-    public List<Map<String, Object>> listarMensagens(
-            @RequestParam Integer idCliente,
-            @RequestParam Integer idProfissional) {
+    public List<Map<String, Object>> listarMensagens(@RequestParam Integer idCliente,@RequestParam Integer idProfissional) {
 
-        return conversaService.listarMensagens(
-                idCliente, idProfissional
-        );
+        return conversaService.listarMensagens(idCliente, idProfissional);
     }
 }

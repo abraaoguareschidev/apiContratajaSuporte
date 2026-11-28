@@ -34,6 +34,15 @@ public class UsuarioService {
     private EmailService emailService;
 
     public SuporteEntity cadastrarSuporte(CadastrarSuporteDTO dto) {
+        String email = dto.getEmail();
+
+        String regex = "^(?=.{1,64}@)[A-Za-z0-9_%+-]+(?:\\.[A-Za-z0-9_%+-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+[A-Za-z]{2,63}$";
+
+        if (email == null || email.length() > 150 || !email.matches(regex)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "E-mail inválido."
+            );
+        }
         if (usuarioRepository.existsByEmail(dto.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já cadastrado");
         }
@@ -76,8 +85,7 @@ public class UsuarioService {
     @Transactional
     public void reenviarEmailVerificacao(String email) {
 
-        Optional<UsuarioEntity> usuario =
-                usuarioRepository.findByEmail(email);
+        Optional<UsuarioEntity> usuario = usuarioRepository.findByEmail(email);
 
         if (usuario.isEmpty()) {
             return;
@@ -85,15 +93,11 @@ public class UsuarioService {
 
         UsuarioEntity suporte = usuario.get();
 
-        if (!"SUPORTE".equals(suporte.getTipoUsuario())
-                || !"PENDENTE".equals(suporte.getStatus())) {
+        if (!"SUPORTE".equals(suporte.getTipoUsuario()) || !"PENDENTE".equals(suporte.getStatus())) {
             return;
         }
 
-        if (verificacaoEmailRepository
-                .existsByUsuario_IdUsuarioAndExpiracaoAfter(
-                        suporte.getIdUsuario(),
-                        LocalDateTime.now().plusMinutes(9))) {
+        if (verificacaoEmailRepository.existsByUsuario_IdUsuarioAndExpiracaoAfter(suporte.getIdUsuario(),LocalDateTime.now().plusMinutes(9))) {
             return;
         }
 
@@ -111,12 +115,7 @@ public class UsuarioService {
 
         String link = "https://surpass-handled-recollect.ngrok-free.dev/auth/verificar-email?token=" + token;
 
-        emailService.sendEmail(
-                suporte.getEmail(),
-                "Confirme seu e-mail - ContrataJá",
-                "Olá, " + suporte.getNome()
-                        + "!\n\nClique no link para confirmar seu e-mail:\n" + link
-        );
+        emailService.sendEmail(suporte.getEmail(),"Confirme seu e-mail - ContrataJá","Olá, " + suporte.getNome()+ "!\n\nClique no link para confirmar seu e-mail:\n" + link);
     }
 
     public void verificarEmail(String token) {
@@ -125,17 +124,11 @@ public class UsuarioService {
                 verificacaoEmailRepository.findByToken(token);
 
         if (verificacao.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Link de verificação inválido."
-            );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Link de verificação inválido.");
         }
 
         if (!verificacao.get().getExpiracao().isAfter(LocalDateTime.now())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "O link de verificação expirou."
-            );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"O link de verificação expirou.");
         }
         UsuarioEntity usuario = verificacao.get().getUsuario();
 
@@ -169,17 +162,10 @@ public class UsuarioService {
 
     public SuporteEntity buscarSuportePorId(int idUsuario) {
 
-        UsuarioEntity usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Usuário não encontrado."
-                ));
+        UsuarioEntity usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário não encontrado."));
 
         if (!(usuario instanceof SuporteEntity suporte)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Suporte não encontrado."
-            );
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Suporte não encontrado.");
         }
 
         return suporte;
@@ -203,7 +189,11 @@ public class UsuarioService {
         }
 
         String novoEmail = dto.email().trim();
+        String regex = "^(?=.{1,64}@)[A-Za-z0-9_%+-]+(?:\\.[A-Za-z0-9_%+-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+[A-Za-z]{2,63}$";
 
+        if (novoEmail.length() > 150 || !novoEmail.matches(regex)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail inválido.");
+        }
         if (!suporte.getEmail().equalsIgnoreCase(novoEmail)
                 && usuarioRepository.existsByEmail(novoEmail)) {
 

@@ -19,9 +19,7 @@ public class SecurityConfig {
                 // desativa a proteção csrf, que protege contra requisições forjadas feitas a partir do navegador logado, em apis que não usam sessão ou cookies ela costuma ser desativada
                 .csrf(csrf -> csrf.disable())
                 // define as regras de autorização, anyRequest pega qualquer requisição e permitAll libera o acesso sem exigir login, por enquanto to deixando toda a api aberta
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                );
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         // constrói a cadeia de filtros com as regras definidas acima e devolve para o spring aplicar
         return http.build();
     }

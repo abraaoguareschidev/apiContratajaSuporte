@@ -13,12 +13,9 @@ public class ConversaService {
 
     private final ConversaRepository conversaRepository;
 
-    public List<Map<String, Object>> listarMensagens(
-            Integer idCliente, Integer idProfissional) {
+    public List<Map<String, Object>> listarMensagens(Integer idCliente, Integer idProfissional) {
 
-        return conversaRepository.listarMensagens(
-                idCliente, idProfissional
-        );
+        return conversaRepository.listarMensagens(idCliente, idProfissional);
     }
 
 }

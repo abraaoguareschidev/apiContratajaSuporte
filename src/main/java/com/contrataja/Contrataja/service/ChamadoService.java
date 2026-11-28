@@ -59,10 +59,7 @@ public class ChamadoService {
 
         ChamadoEntity chamadoSalvo = chamadoRepository.save(chamado);
 
-        messagingTemplate.convertAndSend(
-                "/topic/chamados",
-                "CHAMADO_ENCERRADO"
-        );
+        messagingTemplate.convertAndSend("/topic/chamados","CHAMADO_ENCERRADO");
 
         return chamadoSalvo;
     }
@@ -90,10 +87,7 @@ public class ChamadoService {
         ChamadoEntity chamado = buscarChamadoPorId(idChamado);
 
         if (chamado == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Chamado não encontrado."
-            );
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Chamado não encontrado.");
         }
 
         UsuarioEntity usuario = chamado.getUsuario();
@@ -118,8 +112,7 @@ public class ChamadoService {
         if (!"aberto".equalsIgnoreCase(chamado.getStatus())) {
             throw new RuntimeException("Este chamado não está disponível para atendimento.");
         }
-        UsuarioEntity usuario = usuarioRepository.findById(idSuporte)
-                .orElseThrow(() -> new RuntimeException("Suporte não encontrado."));
+        UsuarioEntity usuario = usuarioRepository.findById(idSuporte).orElseThrow(() -> new RuntimeException("Suporte não encontrado."));
 
         if (!(usuario instanceof SuporteEntity)) {
             throw new RuntimeException("O usuário informado não é um suporte.");
@@ -131,10 +124,7 @@ public class ChamadoService {
 
         ChamadoEntity chamadoSalvo = chamadoRepository.save(chamado);
 
-        messagingTemplate.convertAndSend(
-                "/topic/chamados",
-                "CHAMADO_ASSUMIDO"
-        );
+        messagingTemplate.convertAndSend("/topic/chamados","CHAMADO_ASSUMIDO");
 
         return chamadoSalvo;
     }

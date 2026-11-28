@@ -18,15 +18,13 @@ public class ContratacaoController {
     private final ContratacaoService contratacaoService;
 
     @GetMapping("/cliente/{idCliente}")
-    public List<Map<String, Object>> listarContratacoesCliente(
-            @PathVariable Integer idCliente) {
+    public List<Map<String, Object>> listarContratacoesCliente(@PathVariable Integer idCliente) {
 
         return contratacaoService.listarContratacoesCliente(idCliente);
     }
 
     @GetMapping("/profissional/{idProfissional}")
-    public List<Map<String, Object>> listarContratacoesProfissional(
-            @PathVariable Integer idProfissional) {
+    public List<Map<String, Object>> listarContratacoesProfissional(@PathVariable Integer idProfissional) {
 
         return contratacaoService.listarContratacoesProfissional(idProfissional);
     }
